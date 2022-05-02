@@ -45,7 +45,9 @@ class UserController implements Controller{
 
                     try {
                         await user.save()
-                        res.status(201).send()
+                        res.status(201).send({
+                            jwt: "JWTToken"
+                        })
                     } catch (e) {
                         res.status(409).send({
                             message: "Failed to insert because email already exists"
