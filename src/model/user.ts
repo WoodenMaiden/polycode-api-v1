@@ -1,8 +1,10 @@
 import { Schema, model } from 'mongoose'
 
 const SCHEMA = new Schema({
+    //userEmail: string
+    _id: String,
+
     userName: String,
-    userEmail: String,
     hashedPassword: String,
 
     exercices: [Number],
