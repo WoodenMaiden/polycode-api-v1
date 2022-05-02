@@ -1,1 +1,1 @@
-export interface DTO {}
+export abstract class DTO {}

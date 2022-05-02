@@ -25,7 +25,7 @@
     "start": "tsc --skipLibCheck && node ./dist/app.js",
     "ts:watch": "tsc -w",
     "test": "echo no tests",
-    "start:dev" : "npm run build && npx nodemon --config nodemon.json"
+    "start:dev": "npm run build && npx nodemon --config nodemon.json"
   },
   "files": [
     "src"
