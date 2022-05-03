@@ -144,11 +144,68 @@ describe("User Controller", () => {
     })
 
     describe('Get an User', () => {
-        it.skip('should return a user', async() => {
+        it('should return a user', async() => {
+            //creating another Warframe first
+            try {
+	            const spy = jest.spyOn(userController, "get")
+	            const mockRequestPOST = {
+	                body: {
+	                    "userName": "WomboLimbo",
+	                    "userEmail": "limbo@warframemail.com",
+	                    "password": "WTF Am I doing ?",
+	                    "passwordVerify": "WTF Am I doing ?"
+	                }
+	            }
+	
+	            await userController.post(mockRequestPOST as Request, mockResponse as Response)
+
+
+                const mockRequest = {
+                    params: [
+                        "WomboLimbo"
+                    ]
+                }
+
+                const expected = 200
+
+                try {
+                    await userController.get(mockRequest as unknown as Request, mockResponse as Response)  
+                    
+                    expect(spy).toHaveBeenCalled()
+                    expect(mockResponse.status).toBeCalledWith(expected)
+                }
+                catch(e) {
+                }
+            } catch (e) {
+            }
 
         })
 
-        it.skip("should'nt return a user", async() => {
+        it("should'nt return a user", async() => {
+            try {
+	            const spy = jest.spyOn(userController, "get")
+                const mockRequest = {
+                    params: [
+                        "Valkyr"
+                    ]
+                }
+
+                const expected = 400
+                const expectedMessage = {
+                    message: "No user found"
+                }
+
+                try {
+                    await userController.get(mockRequest as unknown as Request, mockResponse as Response)  
+                    
+                    expect(spy).toHaveBeenCalled()
+                    expect(mockResponse.status).toBeCalledWith(expected)
+                    expect(mockResponse.send).toBeCalledWith(expectedMessage)
+                }
+                catch(e) {
+                }
+            } catch (e) {
+            }
 
         })
     })

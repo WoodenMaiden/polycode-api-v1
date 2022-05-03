@@ -71,16 +71,33 @@ class UserController implements Controller{
             })
         }
     }
-    get(req: Request, res: Response): void {
+    async get(req: Request, res: Response) {
+        const toGet: string = req.params[0]
+        let toSend: any[]
+        try {
+            toSend = await UserModel.find({_id: toGet}).exec()
+            console.log(toSend)
+            if (toSend.length > 0) res.status(200).send(toSend)
+            else res.status(400).send({
+                message: "No user found"
+            })
+        }
+        catch {
+            res.status(400).send({
+                message: "No user found"
+            })
+        }
+    }
+
+    async patch(req: Request, res: Response) {
         throw new Error('Method not implemented.')
     }
-    patch(req: Request, res: Response): void {
+
+    async put(req: Request, res: Response) {
         throw new Error('Method not implemented.')
     }
-    put(req: Request, res: Response): void {
-        throw new Error('Method not implemented.')
-    }
-    delete(req: Request, res: Response): void {
+
+    async delete(req: Request, res: Response) {
         throw new Error('Method not implemented.')
     }
 }
