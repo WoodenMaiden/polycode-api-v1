@@ -1,19 +1,26 @@
 import 'dotenv/config'
 import { connect } from 'mongoose';
+import express, { Express } from "express";
 
-import express, { Express, Request, Response } from "express";
 import bodyParser from 'body-parser';
+import cors from 'cors'
+
 import { checkDTO } from './middlewares/checkDTO';
 
 import { userController } from  './controllers'
-
 
 const app: Express = express();
 
 const jsonparse = bodyParser.json()
 
+//app middlewares
+app.use(cors())
+
 //user
 app.post('/user', jsonparse, checkDTO, userController.post)
+app.get('/user/:name', userController.get)
+app.delete('/user/:name', userController.delete)
+app.patch('/user/:ressource/:toChange/:value', jsonparse, userController.patch)
 
 app.listen(process.env.PORT || 80, async () => {
     if (!process.env.MONGODB_URI || !process.env.SECRET) {
