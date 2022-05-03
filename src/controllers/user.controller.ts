@@ -76,14 +76,13 @@ class UserController implements Controller{
         let toSend: any[]
         try {
             toSend = await UserModel.find({_id: toGet}).exec()
-            console.log(toSend)
             if (toSend.length > 0) res.status(200).send(toSend)
-            else res.status(400).send({
+            else res.status(404).send({
                 message: "No user found"
             })
         }
         catch {
-            res.status(400).send({
+            res.status(404).send({
                 message: "No user found"
             })
         }
@@ -98,7 +97,21 @@ class UserController implements Controller{
     }
 
     async delete(req: Request, res: Response) {
-        throw new Error('Method not implemented.')
+        const toDel: string = req.params[0]
+        try {
+            const deleteCount: any = await UserModel.deleteOne({_id: toDel}).exec()
+            console.log(deleteCount)
+            if (deleteCount.deletedCount === 0) res.status(200).send({
+                message: "Deleted"
+            })
+            else res.status(404).send({
+                message: "Coud not delete user because it does not exists"
+            })
+        } catch (e) {
+            res.status(400).send({
+                message: "Coud not delete"
+            })
+        }
     }
 }
 const userController = new UserController()

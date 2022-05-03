@@ -10,7 +10,7 @@ import { Request, Response, NextFunction } from 'express';
 describe("User Controller", () => {
     let mockResponse: Partial<any> //Partial<Request>
     mockResponse = {
-        send: function(){ },
+        send: function(body: any){ },
         json: function(err: any){
             console.log("\n : " + err);
         },
@@ -190,7 +190,7 @@ describe("User Controller", () => {
                     ]
                 }
 
-                const expected = 400
+                const expected = 404
                 const expectedMessage = {
                     message: "No user found"
                 }
@@ -212,8 +212,55 @@ describe("User Controller", () => {
 
 
     describe('Delete an User', () => {
-        it.skip('should delete a user', async() => {
+        it('should delete a user', async() => {
+            //creating another Warframe first
+            try {
+	            const spy = jest.spyOn(userController, "delete")
+                const spyGet = jest.spyOn(userController, "get")
+	            const mockRequestPOST = {
+	                body: {
+	                    "userName": "deleteMe",
+	                    "userEmail": "deleteMe@plz.com",
+	                    "password": "DELETEME",
+	                    "passwordVerify": "DELETEME"
+	                }
+	            }
+	
+	            await userController.post(mockRequestPOST as Request, mockResponse as Response)
 
+
+                const mockRequest = {
+                    params: [
+                        "deleteMe"
+                    ]
+                }
+
+                const expectedCode = 200
+                const expectedCodeGET = 404
+
+                try {
+                    await userController.delete(mockRequest as unknown as Request, mockResponse as Response)  
+                    expect(spy).toHaveBeenCalled()
+                    expect(mockResponse.status).toBeCalledWith(expectedCode)
+                    expect(mockResponse.send).toBeCalledWith({
+                        message: "Deleted"
+                    })
+
+                    try {
+                        await userController.get(mockRequest as unknown as Request, mockResponse as Response)
+                    
+                        expect(spyGet).toHaveBeenCalled()
+                        expect(mockResponse.status).toBeCalledWith(expectedCodeGET)
+                        expect(mockResponse.send).toBeCalledWith({
+                            message: "No user found"
+                        })
+
+                    } catch (e) {
+                    }
+                } catch(e) {
+                }
+            } catch (e) {
+            }
         })
     })
 
