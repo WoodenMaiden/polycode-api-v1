@@ -35,8 +35,8 @@ class UserController implements Controller{
                 try {
                     const hashed = await hash(INPUT.password, salt)
                     const user = new UserModel({
-                        _id: INPUT.userEmail,
-                        userName: INPUT.userName,
+                        _id: INPUT.userName,
+                        userEmail: INPUT.userEmail,
                         hashedPassword: hashed,
 
                         exercices: [],
@@ -50,7 +50,7 @@ class UserController implements Controller{
                         })
                     } catch (e) {
                         res.status(409).send({
-                            message: "Failed to insert because email already exists"
+                            message: "Failed to insert because email and/or username already exists"
                         })
                     }
                 } catch (e) {

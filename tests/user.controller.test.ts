@@ -75,8 +75,32 @@ describe("User Controller", () => {
 	            const spy = jest.spyOn(userController, "post")
 	            const mockRequest = {
 	                body: {
+	                    "userName": "Excalibur",
+	                    "userEmail": "excalibur_at_warframemail.com",
+	                    "password": "ImAGoodWarframe",
+	                    "passwordVerify": "ImAGoodWarframe"
+	                }
+	            }
+	
+	            const expected = {
+	                jwt: "JWTToken"
+	            }
+	
+	            await userController.post(mockRequest as Request, mockResponse as Response)
+	
+                expect(spy).toHaveBeenCalled()
+	            expect(mockResponse.send).not.toBeCalledWith(expected)
+            } catch (e) {
+            }
+        })
+
+        it('should reject user creation because of already existing username', async () => {
+            try {
+	            const spy = jest.spyOn(userController, "post")
+	            const mockRequest = {
+	                body: {
 	                    "userName": "xVoban",
-	                    "userEmail": "voban_trapper_at_warframemail.com",
+	                    "userEmail": "voban_trapper@gmail.com",
 	                    "password": "TrapsAreCool",
 	                    "passwordVerify": "TrapsAreCool"
 	                }
@@ -99,10 +123,10 @@ describe("User Controller", () => {
 	            const spy = jest.spyOn(userController, "post")
 	            const mockRequest = {
 	                body: {
-	                    "userName": "xVoban",
-	                    "userEmail": "voban_trapper_at_warframemail.com",
-	                    "password": "TrapsMayBeCool",
-	                    "passwordVerify": "TrapsAreCool"
+	                    "userName": "Garuda",
+	                    "userEmail": "gimmedatshit@blooddonations.com",
+	                    "password": "aPassword",
+	                    "passwordVerify": "aPassword"
 	                }
 	            }
 	
@@ -118,6 +142,38 @@ describe("User Controller", () => {
             }
         })
     })
+
+    describe('Get an User', () => {
+        it.skip('should return a user', async() => {
+
+        })
+
+        it.skip("should'nt return a user", async() => {
+
+        })
+    })
+
+
+    describe('Delete an User', () => {
+        it.skip('should delete a user', async() => {
+
+        })
+    })
+
+    describe('Change an User', () => {
+        it.skip('should change email of a user', async() => {
+
+        })
+
+        it.skip("should'nt change user's email because it already exists", async() => {
+
+        })
+
+        it.skip("should'nt change user's password because verification is different", async() => {
+
+        })
+    })
+
 
     afterAll( async () => {
         try {    

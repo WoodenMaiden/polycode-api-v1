@@ -1,5 +1,4 @@
 import { Response, Request } from 'express'
-import { Schema } from 'mongoose'
 
 
 export default interface Controller {
