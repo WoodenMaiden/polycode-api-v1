@@ -21,6 +21,7 @@ app.post('/user', jsonparse, checkDTO, userController.post)
 app.get('/user/:name', userController.get)
 app.delete('/user/:name', userController.delete)
 app.patch('/user/:ressource/:toChange/:value', jsonparse, userController.patch)
+app.get('/login', jsonparse, userController.login)
 
 app.listen(process.env.PORT || 80, async () => {
     if (!process.env.MONGODB_URI || !process.env.SECRET) {

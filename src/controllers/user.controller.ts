@@ -1,13 +1,43 @@
 import Controller from './controller'
+
+import * as jwt from 'jsonwebtoken'
+
 import { Response, Request } from 'express'
 import { genSalt, hash, compare } from 'bcrypt'
 
 import { UserModel } from '../model/user'
-import { SignUpDTO } from '../dto';
+import { SignUpDTO, LoginDTO } from '../dto';
 
 class UserController implements Controller{  
     private static SALTROUNDS: number = 12
     private static EMAILREGEX = /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/
+
+    async login(req: Request, res: Response) {
+        const INPUT: LoginDTO = req.body
+        console.log(INPUT)
+
+        try {
+
+            const found = await UserModel.findOne({userName: INPUT.userName}).exec()
+            const samePassword = await compare(INPUT.password, found.hashedPassword)
+
+            if (!samePassword) throw new Error();
+
+            res.status(200).send({
+                info: found,
+                jwt: jwt.sign({
+                    usr: INPUT.userName,
+                    admin: found.admin
+                }, process.env.SECRET, {expiresIn: "2 days"} )
+            })
+        }
+        catch (e) {
+            res.status(404).send({
+                message: "Wrong credentials"
+            })
+        }
+    }
+
 
     async post(req: Request, res: Response) {
         const INPUT: SignUpDTO = req.body
@@ -47,7 +77,10 @@ class UserController implements Controller{
                     try {
                         await user.save()
                         res.status(201).send({
-                            jwt: "JWTToken"
+                            jwt: jwt.sign({
+                                usr: INPUT.userName,
+                                admin: false
+                            }, process.env.SECRET, {expiresIn: "2 days"} )
                         })
                     } catch (e) {
                         res.status(409).send({
@@ -76,7 +109,7 @@ class UserController implements Controller{
         const toGet: string = req.params.name
         let toSend: any[]
         try {
-            toSend = await UserModel.find({userName: toGet}).exec()
+            toSend = await UserModel.findOne({userName: toGet}).exec()
             if (toSend.length > 0) res.status(200).send(toSend)
             else res.status(404).send({
                 message: "No user found"
@@ -125,6 +158,23 @@ class UserController implements Controller{
                                     })
                                 }
                             break;
+
+                        case 'admin':
+                        
+                            try {
+                                await UserModel.findOneAndUpdate({userName: ressource}, {admin: value})
+                                res.status(204).send({
+                                    message: "Changed"
+                                })
+                                break;
+                            }
+                            catch(e) {
+                                res.status(500).send({
+                                    message: "Could not set admin value"
+                                })
+                                break;
+                            }
+                            
                       
                         case 'username': 
                             try {
