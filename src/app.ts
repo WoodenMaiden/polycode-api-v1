@@ -2,12 +2,15 @@ import 'dotenv/config'
 import { connect } from 'mongoose';
 import express, { Express } from "express";
 
+//middlewares
 import bodyParser from 'body-parser';
 import cors from 'cors'
 
 import { checkDTO } from './middlewares/checkDTO';
+import { jwtAuth } from './middlewares/jwtAuth';
 
 import { userController } from  './controllers'
+import { jwtAdminAuth } from './middlewares/jwtAdminAuth';
 
 const app: Express = express();
 
@@ -19,8 +22,8 @@ app.use(cors())
 //user
 app.post('/user', jsonparse, checkDTO, userController.post)
 app.get('/user/:name', userController.get)
-app.delete('/user/:name', userController.delete)
-app.patch('/user/:ressource/:toChange/:value', jsonparse, userController.patch)
+app.delete('/user/:name', jwtAuth, userController.delete)
+app.patch('/user/:name/:toChange/:value', jwtAuth , jwtAdminAuth, jsonparse, userController.patch)
 app.get('/login', jsonparse, userController.login)
 
 app.listen(process.env.PORT || 80, async () => {

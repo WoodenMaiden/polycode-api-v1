@@ -50,6 +50,8 @@ describe("User Controller", () => {
             try {
 	            const spy = jest.spyOn(userController, "post")
                 const spySend = jest.spyOn(mockResponse, "send")
+                const spyStatus = jest.spyOn(mockResponse, "status")
+
 
 	            const mockRequest = {
 	                body: {
@@ -60,14 +62,12 @@ describe("User Controller", () => {
 	                }
 	            }
 	
-	            const expected = {
-	                jwt: "JWTToken"
-	            }
+	            const expectedCode = 201
 	
 	            await userController.post(mockRequest as Request, mockResponse as Response)
 	
                 expect(spy).toHaveBeenCalled()
-	            expect(spySend).toBeCalledWith(expected)
+	            expect(spyStatus).toBeCalledWith(expectedCode)
             } catch (e) {
                 console.log(e)
             }
@@ -88,14 +88,12 @@ describe("User Controller", () => {
 	                }
 	            }
 	
-	            const expected = {
-	                jwt: "JWTToken"
-	            }
+	            const expectedCode = 201
 	
 	            await userController.post(mockRequest as Request, mockResponse as Response)
 	
                 expect(spy).toHaveBeenCalled()
-	            expect(spySend).not.toBeCalledWith(expected)
+	            expect(spyStatus).not.toBeCalledWith(expectedCode)
             } catch (e) {
                 console.log(e)
             }
@@ -116,14 +114,12 @@ describe("User Controller", () => {
 	                }
 	            }
 	
-	            const expected = {
-	                jwt: "JWTToken"
-	            }
+	            const expectedCode = 201
 	
 	            await userController.post(mockRequest as Request, mockResponse as Response)
 	
                 expect(spy).toHaveBeenCalled()
-	            expect(spySend).not.toBeCalledWith(expected)
+	            expect(spyStatus).not.toBeCalledWith(expectedCode)
             } catch (e) {
                 console.log(e)
             }
@@ -144,14 +140,12 @@ describe("User Controller", () => {
 	                }
 	            }
 	
-	            const expected = {
-	                jwt: "JWTToken"
-	            }
+	            const expectedCode = 201
 	
 	            await userController.post(mockRequest as Request, mockResponse as Response)
 	
                 expect(spy).toHaveBeenCalled()
-	            expect(spySend).not.toBeCalledWith(expected)
+	            expect(spyStatus).not.toBeCalledWith(expectedCode)
             } catch (e) {
                 console.log(e)
             }
@@ -305,7 +299,7 @@ describe("User Controller", () => {
 
             const mockRequest = {
                 params: {
-                    ressource: "xVoban",
+                    name: "xVoban",
                     toChange: "email",
                     value : "someotheremail@mail.net"
                 },
@@ -333,7 +327,7 @@ describe("User Controller", () => {
 
             const mockRequest = {
                 params: {
-                    ressource: "xVoban",
+                    name: "xVoban",
                     toChange: "email",
                     value : "limbo@warframemail.com"
                 },
@@ -365,7 +359,7 @@ describe("User Controller", () => {
 
             const mockRequest = {
                 params: {
-                    ressource: "xVoban",
+                    name: "xVoban",
                     toChange: "password",
                     value : "password"
                 },

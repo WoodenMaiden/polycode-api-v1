@@ -14,7 +14,6 @@ class UserController implements Controller{
 
     async login(req: Request, res: Response) {
         const INPUT: LoginDTO = req.body
-        console.log(INPUT)
 
         try {
 
@@ -125,8 +124,7 @@ class UserController implements Controller{
     async patch(req: Request, res: Response) {
         const INPUT = req.body
          
-        const [ ressource, toChange, value ] = [ req.params.ressource, req.params.toChange , req.params.value ]
-        console.log(value)
+        const [ ressource, toChange, value ] = [ req.params.name, req.params.toChange , req.params.value ]
 
         if(value === req.body.confirm) {
             try {
