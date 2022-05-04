@@ -1,9 +1,11 @@
 import { Response, Request, NextFunction } from "express";
-import { DTO, SignUpDTO } from '../dto'
+import { DTO, LoginDTO, SignUpDTO, PatchDTO } from '../dto'
 
 
 const DTOs: Map<string, DTO> = new Map<string, DTO>([
-    ["user", new SignUpDTO()]
+    ["POST;user", new SignUpDTO()],
+    ["PATCH;user", new PatchDTO()],
+    ["GET;login", new LoginDTO()]
 ])
 
 
@@ -11,7 +13,7 @@ export function checkDTO(req: Request, res: Response, next: NextFunction) {
     const REGEX = /"\w+":/ig
 
     const input = req.body
-    const identifiedDTO: DTO = DTOs.get(req.url.substring(1)) ?? res.status(400).send({
+    const identifiedDTO: DTO = DTOs.get(req.method + ";" + req.url.substring(1)) ?? res.status(400).send({
         message: "Invalid route"
     })
 

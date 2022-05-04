@@ -23,8 +23,8 @@ app.use(cors())
 app.post('/user', jsonparse, checkDTO, userController.post)
 app.get('/user/:name', userController.get)
 app.delete('/user/:name', jwtAuth, userController.delete)
-app.patch('/user/:name/:toChange/:value', jwtAuth , jwtAdminAuth, jsonparse, userController.patch)
-app.get('/login', jsonparse, userController.login)
+app.patch('/user/:name/:toChange/:value', jwtAuth , jwtAdminAuth, jsonparse, checkDTO, userController.patch)
+app.get('/login', jsonparse, checkDTO, userController.login)
 
 app.listen(process.env.PORT || 80, async () => {
     if (!process.env.MONGODB_URI || !process.env.SECRET) {
