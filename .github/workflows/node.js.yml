@@ -9,6 +9,9 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  MONGODB_URI: "mongodb://ci:aReallySecuredPassword@localhost:27017/polycode?authSource=admin&serverSelectionTimeoutMS=2000&ssl=false"
+
 jobs:
   build:
 
@@ -17,15 +20,26 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x, 14.x, 16.x]
+        mongodb-version: ['4.2', '4.4', '5.0']
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
+    - name: Start mongodb
+      uses: supercharge/mongodb-github-action@1.7.0
+      with:
+        mongodb-version: ${{ matrix.mongodb-version }}
+        mongodb-username: ci
+        mongodb-password: aReallySecuredPassword
+        mongodb-db: polycode
+  
+
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
+    - run: npm i
+    - run: npm i -D typescript
     - run: npm run build --if-present
     - run: npm test
