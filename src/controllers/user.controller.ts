@@ -220,7 +220,7 @@ class UserController implements Controller{
 
                         case 'addExercice': 
                             try {
-                                await UserModel.findOneAndUpdate({userName: ressource}, {exercices: target.exercices.concat(parseInt(value, 10))})
+                                await UserModel.findOneAndUpdate({userName: ressource}, {exercices: target.exercices.concat(value)})
                                 res.status(204).send({
                                     message: "Added exercice"
                                 })

@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose'
+import { Schema, model, Types } from 'mongoose'
 
 const SCHEMA = new Schema({
     userName: { type: String, index: { unique: true }},
@@ -6,7 +6,7 @@ const SCHEMA = new Schema({
     hashedPassword: String,
     admin: {type: Boolean, default: false},
 
-    exercices: [Number],
+    exercices: [{type: Types.ObjectId, ref: 'exercice'}],
 
     inscriptionDate: Date
 })

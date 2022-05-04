@@ -1,11 +1,12 @@
 import { Response, Request, NextFunction } from "express";
-import { DTO, LoginDTO, SignUpDTO, PatchDTO } from '../dto'
+import { DTO, LoginDTO, SignUpDTO, PatchDTO, ExerciseDTO } from '../dto'
 
 
 const DTOs: Map<string, DTO> = new Map<string, DTO>([
     ["POST;user", new SignUpDTO()],
     ["PATCH;user", new PatchDTO()],
-    ["GET;login", new LoginDTO()]
+    ["GET;login", new LoginDTO()],
+    ["POST;exercise", new ExerciseDTO()]
 ])
 
 

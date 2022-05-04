@@ -9,7 +9,7 @@ import cors from 'cors'
 import { checkDTO } from './middlewares/checkDTO';
 import { jwtAuth } from './middlewares/jwtAuth';
 
-import { userController } from  './controllers'
+import { userController, exerciseController } from  './controllers'
 import { jwtAdminAuth } from './middlewares/jwtAdminAuth';
 
 const app: Express = express();
@@ -25,6 +25,10 @@ app.get('/user/:name', userController.get)
 app.delete('/user/:name', jwtAuth, userController.delete)
 app.patch('/user/:name/:toChange/:value', jwtAuth , jwtAdminAuth, jsonparse, checkDTO, userController.patch)
 app.get('/login', jsonparse, checkDTO, userController.login)
+
+//exercice
+app.post('/exercise', jsonparse, checkDTO, jwtAdminAuth, exerciseController.post)
+app.get('/exercise/:id', exerciseController.get)
 
 app.listen(process.env.PORT || 80, async () => {
     if (!process.env.MONGODB_URI || !process.env.SECRET) {
