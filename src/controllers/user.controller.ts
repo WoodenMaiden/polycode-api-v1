@@ -218,17 +218,17 @@ class UserController implements Controller{
                                 break;
                             }
 
-                        case 'addExercice': 
+                        case 'addExercise': 
                             try {
                                 await UserModel.findOneAndUpdate({userName: ressource}, {exercices: target.exercices.concat(value)})
                                 res.status(204).send({
-                                    message: "Added exercice"
+                                    message: "Added exercise"
                                 })
                                 break;
                             }
                             catch (e){
                                 res.status(500).send({
-                                    message: "Could not add exercice"
+                                    message: "Could not add exercise"
                                 })
                                 break;
                             }
