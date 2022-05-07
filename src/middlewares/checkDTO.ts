@@ -7,7 +7,7 @@ const DTOs: Map<string, DTO> = new Map<string, DTO>([
     ["PATCH;user", new PatchDTO()],
     ["GET;login", new LoginDTO()],
     ["POST;exercise", new ExerciseDTO()],
-    ["GET;answer", new AnswerDTO()]
+    ["POST;answer", new AnswerDTO()]
 ])
 
 
@@ -18,10 +18,14 @@ export function checkDTO(req: Request, res: Response, next: NextFunction) {
         ? DTOs.get(req.method + ';')
         : DTOs.get(req.method + ";" +  req.url.split('/')[1])
     
-    if (!identifiedDTO) res.status(400).send({
-        message: "Invalid route"
-    })
+
+    if (!identifiedDTO){
+        res.status(400).send({
+            message: "Invalid route"
+        })
+    } 
     else {
+        
         const DTOFields: string[] = JSON.stringify(identifiedDTO).match(REGEX);
         const strInputFields: string[] = JSON.stringify(input).match(REGEX);
 

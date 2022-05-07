@@ -4,7 +4,7 @@ import { Response, Request, NextFunction } from "express";
 export function jwtAdminAuth(req: Request, res: Response, next: NextFunction) {
     
     const AUTHORIZATION = req.headers.authorization
-    if ((req.url.split('/')[1] !== "user" && req.params.toChange && req.params.toChange !== "admin")) next()
+    if ((req.params.toChange && req.params.toChange !== "admin")) next()
     else {
         if (AUTHORIZATION){
             if (AUTHORIZATION.match(/bearer\s+(\S+)/i)){
