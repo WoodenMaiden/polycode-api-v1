@@ -31,6 +31,7 @@
     "src"
   ],
   "dependencies": {
+    "axios": "^0.27.2",
     "bcrypt": "5.0.1",
     "body-parser": "1.19.1",
     "compression": "1.7.4",
@@ -42,6 +43,7 @@
     "joi": "17.5.0",
     "jsonwebtoken": "8.5.1",
     "mongoose": "^6.1.6",
+    "node-fetch": "^2.6.7",
     "ts-node": "10.4.0",
     "util": "0.12.4"
   },
