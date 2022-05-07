@@ -1,8 +1,9 @@
 import Controller from './controller'
 
+import axios from 'axios';
 import { Response, Request } from 'express'
 
-import { ExerciseModel } from '../model/exercise'
+import { ExerciseModel } from '../model/exercise';
 
 class ExerciseController implements Controller{  
     async get(req: Request, res: Response){
@@ -41,9 +42,56 @@ class ExerciseController implements Controller{
             })
         }
     }
+
+    async answer(req: Request, res: Response){
+        const USER: string = req.params.name 
+        const EXERCISE: string = req.params.id
+        const INPUT = req.body
+        const JWT = req.headers.authorization
+
+        const HEADERS: Record<string, any> = {
+            headers: {
+                Authorization: JWT
+            }
+        }
+
+        try {
+            const RESPONSE: Record<string, any> = 
+                await (await axios.post(process.env.RUNNER_URL, INPUT)).data
+
+            try {
+                if (RESPONSE.completed) {
+                    
+                    const PAYLOAD = { "original": EXERCISE,"confirm" : EXERCISE }
+                    /*await fetch(`http://localhost:${process.env.PORT}/user/${USER}/addExercise/${EXERCISE}`, 
+                            {method: 'PATCH', headers: HEADERS, body: JSON.stringify(PAYLOAD)})*/
+                    await axios.patch(`http://localhost:${process.env.PORT}/user/${USER}/addExercise/${EXERCISE}`,
+                        PAYLOAD, HEADERS)
+                    res.status(200).send({
+                        message: `Completed exercice ${EXERCISE} and registered its completion`,
+                        ...RESPONSE
+                    })
+                } else{
+                    res.status(200).send({
+                        message: `you failed`,
+                        ...RESPONSE
+                    })
+                }
+            } catch(e) {
+                console.log(e)
+                res.status(500).send({
+                    message: "Could not add exercice completion to database"
+                })
+            }
+        } catch(e) {
+            res.status(500).send({
+                message: "Couldn't send your answer to the runners"
+            })
+        }
+    }
     
     async patch(req: Request, res: Response){
-        res.status(204).send()
+        res.status(203).send()
     }
 
     async delete(req: Request, res: Response){

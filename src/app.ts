@@ -29,9 +29,11 @@ app.get('/login', jsonparse, checkDTO, userController.login)
 //exercice
 app.post('/exercise', jsonparse, checkDTO, jwtAdminAuth, exerciseController.post)
 app.get('/exercise/:id', exerciseController.get)
+app.post('/answer/:name/:id', jsonparse, checkDTO, exerciseController.answer) //name === username just as above
+
 
 app.listen(process.env.PORT || 80, async () => {
-    if (!process.env.MONGODB_URI || !process.env.SECRET) {
+    if (!process.env.MONGODB_URI || !process.env.SECRET || !process.env.RUNNER_URL) {
         console.log("Please fill environment variables")
         process.exit(1);
     }
