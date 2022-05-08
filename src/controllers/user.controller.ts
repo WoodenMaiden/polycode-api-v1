@@ -220,7 +220,8 @@ class UserController implements Controller{
 
                         case 'addExercise': 
                             try {
-                                await UserModel.findOneAndUpdate({userName: ressource}, {exercices: target.exercices.concat(value)})
+                                const newArray = (!target.exercices.includes(value))? target.exercices.concat(value) : target.exercices
+                                await UserModel.findOneAndUpdate({userName: ressource}, {exercices: newArray})
                                 res.status(204).send({
                                     message: "Added exercise"
                                 })
