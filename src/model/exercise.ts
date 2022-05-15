@@ -5,8 +5,11 @@ const SCHEMA = new Schema({
     
     title: String,
     statement: String, // markdown goes here
-    relatedCourse: {type: String, index: true },
-
+    relatedCourse: {
+        courseName : {type: String, index: true },
+        courseDescription: {type : String},
+        exerciseNumber: { type: Number }
+    },
     inputs: [String], //there can be several inputs per exercice
     expectedOutputs: [String], //inputs[n] => expectedOutputs[n]
 

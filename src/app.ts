@@ -4,6 +4,7 @@ import express, { Express } from "express";
 
 //middlewares
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';'cookie-parser'
 import cors from 'cors'
 
 import { checkDTO } from './middlewares/checkDTO';
@@ -17,18 +18,20 @@ const app: Express = express();
 const jsonparse = bodyParser.json()
 
 //app middlewares
-app.use(cors())
+app.use(cookieParser())
+app.use(cors({origin: '*'}))
 
 //user
 app.post('/user', jsonparse, checkDTO, userController.post)
 app.get('/user/:name', userController.get)
 app.delete('/user/:name', jwtAuth, userController.delete)
 app.patch('/user/:name/:toChange/:value', jwtAuth , jwtAdminAuth, jsonparse, checkDTO, userController.patch)
-app.get('/login', jsonparse, checkDTO, userController.login)
+app.post('/login', jsonparse, checkDTO, userController.login)
 
 //exercice
 app.post('/exercise', jsonparse, checkDTO, jwtAdminAuth, exerciseController.post)
 app.get('/exercise/:id', exerciseController.get)
+app.delete('/exercise/:id', jwtAdminAuth, exerciseController.delete)
 app.post('/answer/:name/:id', jsonparse, checkDTO, exerciseController.answer) //name === username just as above
 
 

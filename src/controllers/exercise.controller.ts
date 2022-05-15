@@ -63,8 +63,7 @@ class ExerciseController implements Controller{
                 if (RESPONSE.completed) {
                     
                     const PAYLOAD = { "original": EXERCISE,"confirm" : EXERCISE }
-                    /*await fetch(`http://localhost:${process.env.PORT}/user/${USER}/addExercise/${EXERCISE}`, 
-                            {method: 'PATCH', headers: HEADERS, body: JSON.stringify(PAYLOAD)})*/
+
                     await axios.patch(`http://localhost:${process.env.PORT}/user/${USER}/addExercise/${EXERCISE}`,
                         PAYLOAD, HEADERS)
                     res.status(200).send({
@@ -95,7 +94,16 @@ class ExerciseController implements Controller{
     }
 
     async delete(req: Request, res: Response){
-        res.status(204).send()
+        const TO_DEL : string = req.params.id
+        try {
+            const found = await ExerciseModel.findOneAndDelete({_id: TO_DEL})
+            console.log(found)
+            res.status(204).send()
+        } catch(e) {
+            res.status(400).send({
+                message: 'Could not delete'
+            })
+        }
     }
 }
 

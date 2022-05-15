@@ -5,7 +5,7 @@ import { DTO, LoginDTO, SignUpDTO, PatchDTO, ExerciseDTO, AnswerDTO } from '../d
 const DTOs: Map<string, DTO> = new Map<string, DTO>([
     ["POST;user", new SignUpDTO()],
     ["PATCH;user", new PatchDTO()],
-    ["GET;login", new LoginDTO()],
+    ["POST;login", new LoginDTO()],
     ["POST;exercise", new ExerciseDTO()],
     ["POST;answer", new AnswerDTO()]
 ])
