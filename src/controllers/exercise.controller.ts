@@ -136,7 +136,29 @@ class ExerciseController implements Controller{
     }
 
     async patchCourse(req: Request, res: Response){
-        res.status(203).send()
+        const [ ressource, toChange, value ] = [ req.params.name, req.params.toChange , req.params.value ]
+        const VALID = ["courseName", "courseDescription", "courseNumber"]
+
+        try {
+            if (!VALID.includes(toChange)) throw new Error()
+            await ExerciseModel.findOne({ 'relatedCourse.courseName': `${ressource}`}).exec()
+        } catch(e) {
+            res.status(404).send({
+                message: "Could not find"
+            })
+            return;
+        }
+
+        try {
+            if (toChange === "courseName") await ExerciseModel.updateMany({'relatedCourse.courseName': `${ressource}`}, {'relatedCourse.courseName' :`${value}`}).exec()
+            else if (toChange === "courseDescription") await ExerciseModel.updateMany({'relatedCourse.courseName': `${ressource}`}, {'relatedCourse.courseDescription' :`${value}`}).exec()
+
+            res.status(204).send()
+        } catch(e) {
+            res.status(500).send({
+                message: "An error happened"
+            })
+        }
     }
 
     async delete(req: Request, res: Response){
