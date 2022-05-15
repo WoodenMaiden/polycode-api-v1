@@ -161,6 +161,33 @@ class ExerciseController implements Controller{
         }
     }
 
+    async getCourses(req: Request, res: Response) {
+        try {
+            const all = await ExerciseModel.find({}, {"relatedCourse.courseName": 1, "relatedCourse.courseDescription": 1}).distinct("relatedCourse.courseName")
+
+            res.status(200).send(all)
+        } catch (e) {
+            res.status(500).send({
+                message: "error"
+            })
+        }
+    }
+
+    async getCourse(req: Request, res: Response) {
+        const ressource = req.params.name
+        
+        try {
+            const found = await ExerciseModel.findOne({"relatedCourse.courseName": ressource}, {_id: 0, "relatedCourse.courseName": 1, "relatedCourse.courseDescription": 1 })
+            res.status(200).send(found)
+        } catch (e) {
+            res.status(500).send({
+                message: "error"
+            })
+        }
+    }
+
+
+
     async delete(req: Request, res: Response){
         const TO_DEL : string = req.params.id
         try {
