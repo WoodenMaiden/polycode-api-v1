@@ -90,6 +90,52 @@ class ExerciseController implements Controller{
     }
     
     async patch(req: Request, res: Response){
+        const [ ressource, toChange, value ] = [ req.params.id, req.params.toChange , req.params.value ]
+        const changeable: string[] = ["language", "title", "statement", "inputs", "expectedOutputs", "addKeyword", "delKeyword"]
+        let found
+        try {
+            found = await ExerciseModel.findById(ressource).exec()
+        } catch (e) {
+            res.status(404).send({
+                message: "Not found"
+            })
+            return 
+        }
+
+        try {
+            if(!changeable.includes(toChange)) res.status(400).send({
+                message: "Wrong thing to change"
+            })
+            else if (toChange === "addKeyword") {
+                await ExerciseModel.findByIdAndUpdate(ressource, { keyWords: found.keyWords.concat(value) }).exec()  
+                res.status(204).send()
+            }
+            else if (toChange === "delKeyword") {
+                await ExerciseModel.findByIdAndUpdate(ressource, { keyWords: found.keyWords.filter((elt: string) => elt !== value) }).exec()  
+                res.status(204).send()
+            } 
+            else if (toChange === "inputs" || toChange === "expectedOutputs") {        
+                if(toChange === "inputs") await ExerciseModel.findByIdAndUpdate(ressource, { inputs: [value] }).exec()  
+                else await ExerciseModel.findByIdAndUpdate(ressource, { expectedOutputs: [value] }).exec()
+                res.status(204).send()
+            } 
+            else {
+                if (toChange === "language") 
+                    await ExerciseModel.findByIdAndUpdate(ressource, { language: value }).exec()
+                else if (toChange === "title") 
+                    await ExerciseModel.findByIdAndUpdate(ressource, { title: value }).exec()
+                else if (toChange === "statement") 
+                    await ExerciseModel.findByIdAndUpdate(ressource, { title: value }).exec()
+                res.status(204).send()
+            }
+        } catch (e) {
+            res.status(500).send({
+                message: "Failed to change"
+            })
+        }
+    }
+
+    async patchCourse(req: Request, res: Response){
         res.status(203).send()
     }
 
@@ -97,7 +143,6 @@ class ExerciseController implements Controller{
         const TO_DEL : string = req.params.id
         try {
             const found = await ExerciseModel.findOneAndDelete({_id: TO_DEL})
-            console.log(found)
             res.status(204).send()
         } catch(e) {
             res.status(400).send({

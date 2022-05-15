@@ -32,6 +32,9 @@ app.post('/login', jsonparse, checkDTO, userController.login)
 app.post('/exercise', jsonparse, checkDTO, jwtAdminAuth, exerciseController.post)
 app.get('/exercise/:id', exerciseController.get)
 app.delete('/exercise/:id', jwtAdminAuth, exerciseController.delete)
+app.patch('/exercise/:id/:toChange/:value', jwtAdminAuth, exerciseController.patch)
+
+app.patch('/course/:name/:toChange/:value', jwtAdminAuth, exerciseController.patchCourse)
 app.post('/answer/:name/:id', jsonparse, checkDTO, exerciseController.answer) //name === username just as above
 
 
