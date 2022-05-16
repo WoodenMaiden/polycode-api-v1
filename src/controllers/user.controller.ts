@@ -2,7 +2,7 @@ import Controller from './controller'
 
 import * as jwt from 'jsonwebtoken'
 
-import { Response, Request } from 'express'
+import { Response, Request, NextFunction } from 'express'
 import { genSalt, hash, compare } from 'bcrypt'
 
 import { UserModel } from '../model/user'
@@ -38,7 +38,7 @@ class UserController implements Controller{
     }
 
 
-    async post(req: Request, res: Response) {
+    async post(req: Request, res: Response, next: NextFunction) {
         const INPUT: SignUpDTO = req.body
 
 
@@ -81,6 +81,7 @@ class UserController implements Controller{
                                 admin: false
                             }, process.env.SECRET, {expiresIn: "2 days"} )
                         })
+                        next()
                     } catch (e) {
                         res.status(409).send({
                             message: "Failed to insert because email and/or username already exists"

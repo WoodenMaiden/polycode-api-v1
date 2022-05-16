@@ -1,7 +1,7 @@
 import Controller from './controller'
 
 import axios from 'axios';
-import { Response, Request } from 'express'
+import { Response, Request, NextFunction } from 'express'
 
 import { ExerciseModel } from '../model/exercise';
 
@@ -17,7 +17,7 @@ class ExerciseController implements Controller{
         }
     }
     
-    async post(req: Request, res: Response){
+    async post(req: Request, res: Response, next: NextFunction){
         try {
             const INPUT = req.body
             if (INPUT.inputs.length < 1 
