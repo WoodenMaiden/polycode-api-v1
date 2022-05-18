@@ -7,6 +7,7 @@ class EmailVerificationController implements Controller {
     async get(req: Request, res: Response){
         try {
             await EVModel.deleteOne({link: req.params.link}) 
+            res.status(204).send()
         } catch (e) {
             res.status(500).send({
                 message: "Could not verify"

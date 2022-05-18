@@ -9,7 +9,9 @@ class ExerciseController implements Controller{
     async get(req: Request, res: Response){
         try {
             const found = await ExerciseModel.findById(req.params.id) 
-            res.status(200).send(found)
+            console.log(found)
+            if (!found) res.status(404).send({message: "Exercise not found"})
+            else res.status(200).send(found)
         } catch(e) {
             res.status(404).send({
                 message: "Exercise not found"
@@ -77,7 +79,6 @@ class ExerciseController implements Controller{
                     })
                 }
             } catch(e) {
-                console.log(e)
                 res.status(500).send({
                     message: "Could not add exercice completion to database"
                 })

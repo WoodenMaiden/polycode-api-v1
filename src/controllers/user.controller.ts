@@ -75,12 +75,7 @@ class UserController implements Controller{
 
                     try {
                         await user.save()
-                        res.status(201).send({
-                            jwt: jwt.sign({
-                                usr: INPUT.userName,
-                                admin: false
-                            }, process.env.SECRET, {expiresIn: "2 days"} )
-                        })
+                        res.status(204).send()
                         next()
                     } catch (e) {
                         res.status(409).send({
