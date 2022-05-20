@@ -187,6 +187,19 @@ class ExerciseController implements Controller{
         }
     }
 
+    async getExercises(req: Request, res: Response) {
+        const ressource = req.params.name
+        
+        try {
+            const found = await ExerciseModel.find({"relatedCourse.courseName": ressource})
+            res.status(200).send(found)
+        } catch (e) {
+            res.status(500).send({
+                message: "error"
+            })
+        }
+    }
+
 
 
     async delete(req: Request, res: Response){

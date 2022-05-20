@@ -36,8 +36,10 @@ app.get('/exercise/:id', exerciseController.get)
 app.delete('/exercise/:id', jwtAdminAuth, exerciseController.delete)
 app.patch('/exercise/:id/:toChange/:value', jwtAdminAuth, exerciseController.patch)
 
+//course
 app.get('/course', exerciseController.getCourses)
 app.get('/course/:name', exerciseController.getCourse)
+app.get('/course/:name/exercises', exerciseController.getExercises)
 app.patch('/course/:name/:toChange/:value', jwtAdminAuth, exerciseController.patchCourse)
 app.post('/answer/:name/:id', jsonparse, checkDTO, exerciseController.answer) //name === username just as above
 
