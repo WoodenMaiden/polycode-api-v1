@@ -221,6 +221,108 @@ describe("User Controller", () => {
     })
 
 
+    describe('Courses', () => {
+        it('should get courses and a specific one', async() => {
+            const spyGetOne = jest.spyOn(exerciseController, "getCourse")
+            const spyGetAll = jest.spyOn(exerciseController, "getCourses")
+
+            const spyStatus = jest.spyOn(mockResponse, "status") 
+
+            const postmockRequest = {
+                body: {
+                    language: "javascript",
+    
+                    title: "An exercise",
+                    statement: "a Statement", // markdown goes here
+                    relatedCourse: {
+                        courseName : "A course",
+                        courseDescription: "A description",
+                        exerciseNumber: 0
+                    },
+                    inputs: [""], //there can be several inputs per exercice
+                    expectedOutputs: ["true"], //inputs[n] => expectedOutputs[n]
+
+                    keyWords: [""],
+                    initialCode: "console.log(true)"
+                }
+            } as Request
+
+            const postmockRequest2 = {
+                body: {
+                    language: "javascript",
+    
+                    title: "An other exercise",
+                    statement: "a Statement", // markdown goes here
+                    relatedCourse: {
+                        courseName : "An other course",
+                        courseDescription: "A description",
+                        exerciseNumber: 0
+                    },
+                    inputs: [""], //there can be several inputs per exercice
+                    expectedOutputs: ["true"], //inputs[n] => expectedOutputs[n]
+
+                    keyWords: [""],
+                    initialCode: "console.log(true)"
+                }
+            } as Request
+
+            const mockNext: NextFunction = jest.fn().mockImplementation()
+
+            await exerciseController.post(postmockRequest, mockResponse as Response, mockNext)
+            await exerciseController.post(postmockRequest2, mockResponse as Response, mockNext)
+
+
+            const mockRequest = {
+                params : {
+                    name : "An other course"
+                }
+            }
+
+            await exerciseController.getCourses(mockRequest as unknown as Request, mockResponse as Response)
+            await exerciseController.getCourse(mockRequest as unknown as Request, mockResponse as Response)
+
+
+            expect(spyGetAll).toHaveBeenCalled()
+            expect(spyGetOne).toHaveBeenCalled()
+            expect(spyStatus).toHaveBeenCalledTimes(4)
+        })
+
+        it('should get exercices of course', async() => {
+            const spy = jest.spyOn(exerciseController, "getExercises")
+            const spyStatus = jest.spyOn(mockResponse, "status") 
+
+            const mockRequest = {
+                params: {
+                    name: "A course"
+                }
+            }
+
+            await exerciseController.getExercises(mockRequest as unknown as Request, mockResponse as Response)
+            
+            expect(spy).toHaveBeenCalled()
+            expect(spyStatus).toHaveBeenCalledWith(200)
+        })
+
+        it('should patch exercices of course', async() => {
+            const spy = jest.spyOn(exerciseController, "patchCourse")
+            const spyStatus = jest.spyOn(mockResponse, "status") 
+
+            const mockRequest = {
+                params: {
+                    name: "A course",
+                    toChange: "courseDescription",
+                    value: "A new Description"
+                }
+            }
+
+            await exerciseController.patchCourse(mockRequest as unknown as Request, mockResponse as Response)
+            
+            expect(spy).toHaveBeenCalled()
+            expect(spyStatus).toHaveBeenCalledWith(204)
+        })
+    })
+
+
     afterAll( async () => {
         try {    
             await connection.db.dropDatabase();
