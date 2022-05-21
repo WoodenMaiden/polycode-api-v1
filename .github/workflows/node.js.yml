@@ -43,3 +43,13 @@ jobs:
     - run: npm i -D typescript
     - run: npm run build --if-present
     - run: npm test
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: dokku deploy
+    - uses: dokku/github-action@v1.0.1
+      with: 
+        ssh_private_key: ${{ secrets.SSH }}
+        git_remote_url: ssh://dokku@13.38.107.81:22/polycode-api
