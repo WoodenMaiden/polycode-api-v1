@@ -49,7 +49,7 @@ jobs:
 
     steps:
     - name: dokku deploy
-    - uses: dokku/github-action@v1.0.1
+      uses: dokku/github-action@v1.0.1
       with: 
         ssh_private_key: ${{ secrets.SSH }}
         git_remote_url: ssh://dokku@13.38.107.81:22/polycode-api
