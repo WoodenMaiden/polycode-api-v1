@@ -9,17 +9,6 @@ import { Request, Response, NextFunction } from 'express';
 
 describe("User Controller", () => {
     let mockResponse: Partial<any> //Partial<Request>
-    mockResponse = {
-        send: function(body: any){ },
-        json: function(err: any){
-            console.log("\n : " + err);
-        },
-        status: function(responseStatus: number) {
-            // This next line makes it chainable
-            return this; 
-        }
-    }
-
 
     beforeAll(async () => {
         try {
@@ -45,11 +34,21 @@ describe("User Controller", () => {
         }
     })
 
+    beforeEach(() => {
+        mockResponse = {
+            send: function(body: any){ },
+            json: function(err: any){
+                console.log("\n : " + err);
+            },
+            status: function(responseStatus: number) {
+                // This next line makes it chainable
+                return this; 
+            }
+        }
+    })
+
     describe('User Signup', () => {
         it('should add a user', async () => {
-            try {
-	            const spy = jest.spyOn(userController, "post")
-                const spySend = jest.spyOn(mockResponse, "send")
                 const spyStatus = jest.spyOn(mockResponse, "status")
 
 
@@ -62,22 +61,40 @@ describe("User Controller", () => {
 	                }
 	            }
 	
-	            const expectedCode = 201
+	            const expectedCode = 204
+
+                const mockNext: NextFunction = jest.fn().mockImplementation()
 	
-	            await userController.post(mockRequest as Request, mockResponse as Response)
+	            await userController.post(mockRequest as Request, mockResponse as Response, mockNext)
 	
-                expect(spy).toHaveBeenCalled()
 	            expect(spyStatus).toBeCalledWith(expectedCode)
-            } catch (e) {
-                console.log(e)
+        })
+
+        it('should login xVoban', async () => {
+            const spy = jest.spyOn(userController, "login")
+            const spyStatus = jest.spyOn(mockResponse, "status")
+            
+            const mockRequest = {
+                body: {
+                    "userName": "xVoban",
+                    "password": "TrapsAreCool",
+
+                }
             }
+
+            const expectedCode = 200
+
+            await userController.login(mockRequest as Request, mockResponse as Response)
+
+            expect(spy).toHaveBeenCalled()
+	        expect(spyStatus).toBeCalledWith(expectedCode)
+
         })
 
         it('should reject user creation because of wrong email', async () => {
-            try {
+            
 	            const spy = jest.spyOn(userController, "post")
                 const spyStatus = jest.spyOn(mockResponse, "status")
-                const spySend = jest.spyOn(mockResponse, "send")
 
 	            const mockRequest = {
 	                body: {
@@ -90,75 +107,70 @@ describe("User Controller", () => {
 	
 	            const expectedCode = 201
 	
-	            await userController.post(mockRequest as Request, mockResponse as Response)
+                const mockNext: NextFunction = jest.fn().mockImplementation()
+
+	            await userController.post(mockRequest as Request, mockResponse as Response, mockNext)
 	
                 expect(spy).toHaveBeenCalled()
 	            expect(spyStatus).not.toBeCalledWith(expectedCode)
-            } catch (e) {
-                console.log(e)
-            }
         })
 
         it('should reject user creation because of already existing username', async () => {
-            try {
-	            const spy = jest.spyOn(userController, "post")
-                const spyStatus = jest.spyOn(mockResponse, "status")
-                const spySend = jest.spyOn(mockResponse, "send")
+            const spy = jest.spyOn(userController, "post")
+            const spyStatus = jest.spyOn(mockResponse, "status")
 
-	            const mockRequest = {
-	                body: {
-	                    "userName": "xVoban",
-	                    "userEmail": "voban_trapper@gmail.com",
-	                    "password": "TrapsAreCool",
-	                    "passwordVerify": "TrapsAreCool"
-	                }
-	            }
-	
-	            const expectedCode = 201
-	
-	            await userController.post(mockRequest as Request, mockResponse as Response)
-	
-                expect(spy).toHaveBeenCalled()
-	            expect(spyStatus).not.toBeCalledWith(expectedCode)
-            } catch (e) {
-                console.log(e)
+            const mockRequest = {
+                body: {
+                    "userName": "xVoban",
+                    "userEmail": "voban_trapper@gmail.com",
+                    "password": "TrapsAreCool",
+                    "passwordVerify": "TrapsAreCool"
+                }
             }
+
+            const expectedCode = 201
+
+            const mockNext: NextFunction = jest.fn().mockImplementation()
+
+
+            await userController.post(mockRequest as Request, mockResponse as Response, mockNext)
+
+            expect(spy).toHaveBeenCalled()
+            expect(spyStatus).not.toBeCalledWith(expectedCode)
         })
 
         it('should reject user creation because of passwords', async () => {
-            try {
-	            const spy = jest.spyOn(userController, "post")
-                const spyStatus = jest.spyOn(mockResponse, "status")
-                const spySend = jest.spyOn(mockResponse, "send")
+            const spy = jest.spyOn(userController, "post")
+            const spyStatus = jest.spyOn(mockResponse, "status")
+            const spySend = jest.spyOn(mockResponse, "send")
 
-                const mockRequest = {
-	                body: {
-	                    "userName": "Garuda",
-	                    "userEmail": "gimmedatshit@blooddonations.com",
-	                    "password": "aPassword",
-	                    "passwordVerify": "aPassword"
-	                }
-	            }
-	
-	            const expectedCode = 201
-	
-	            await userController.post(mockRequest as Request, mockResponse as Response)
-	
-                expect(spy).toHaveBeenCalled()
-	            expect(spyStatus).not.toBeCalledWith(expectedCode)
-            } catch (e) {
-                console.log(e)
+            const mockRequest = {
+                body: {
+                    "userName": "Garuda",
+                    "userEmail": "gimmedatshit@blooddonations.com",
+                    "password": "aPassword",
+                    "passwordVerify": "aPassword"
+                }
             }
+
+            const expectedCode = 201
+
+            const mockNext: NextFunction = jest.fn().mockImplementation()
+
+            await userController.post(mockRequest as Request, mockResponse as Response, mockNext)
+
+            expect(spy).toHaveBeenCalled()
+            expect(spyStatus).not.toBeCalledWith(expectedCode)
+
         })
     })
 
     describe('Get an User', () => {
         it('should return a user', async() => {
             //creating another Warframe first
-            try {
+        
 	            const spy = jest.spyOn(userController, "get")
                 const spyStatus = jest.spyOn(mockResponse, "status")
-                const spySend = jest.spyOn(mockResponse, "send")
 
 	            const mockRequestPOST = {
 	                body: {
@@ -168,35 +180,38 @@ describe("User Controller", () => {
 	                    "passwordVerify": "WTF Am I doing ?"
 	                }
 	            }
+
+                const mockRequestGET = {
+	                params: {
+	                    name: "WomboLimbo",
+	                }
+	            }
 	
-	            await userController.post(mockRequestPOST as Request, mockResponse as Response)
+                const mockNext: NextFunction = jest.fn().mockImplementation()
 
+	            await userController.post(mockRequestPOST as Request, mockResponse as Response, mockNext)
 
-                const mockRequest = {
-                    params: {
-                        name: "WomboLimbo"
+                mockResponse = {
+                    send: function(body: any){ },
+                    json: function(err: any){
+                        console.log("\n : " + err);
+                    },
+                    status: function(responseStatus: number) {
+                        // This next line makes it chainable
+                        return this; 
                     }
                 }
 
-                const expected = 200
+                await userController.get(mockRequestGET as unknown as Request, mockResponse as Response)
+                const expected = 204
 
-                try {
-                    await userController.get(mockRequest as unknown as Request, mockResponse as Response)  
-                    
-                    expect(spy).toHaveBeenCalled()
-                    expect(spyStatus).toBeCalledWith(expected)
-                }
-                catch(e) {
-                    console.log(e)
-                }
-            } catch (e) {
-                console.log(e)
-            }
-
+                                    
+                expect(spy).toHaveBeenCalled()
+                expect(spyStatus).toBeCalledWith(expected)
+        
         })
 
         it("shouldn't return a user", async() => {
-            try {
 	            const spy = jest.spyOn(userController, "get")
                 const spyStatus = jest.spyOn(mockResponse, "status")
                 const spySend = jest.spyOn(mockResponse, "send")
@@ -212,19 +227,11 @@ describe("User Controller", () => {
                     message: "No user found"
                 }
 
-                try {
-                    await userController.get(mockRequest as unknown as Request, mockResponse as Response)  
-                    
-                    expect(spy).toHaveBeenCalled()
-                    expect(spyStatus).toBeCalledWith(expected)
-                    expect(spySend).toBeCalledWith(expectedMessage)
-                }
-                catch(e) {
-                    console.log(e)
-                }
-            } catch (e) {
-                console.log(e)
-            }
+                await userController.get(mockRequest as unknown as Request, mockResponse as Response)  
+                
+                expect(spy).toHaveBeenCalled()
+                expect(spyStatus).toBeCalledWith(expected)
+                expect(spySend).toBeCalledWith(expectedMessage)
 
         })
     })
@@ -233,92 +240,72 @@ describe("User Controller", () => {
     describe('Delete an User', () => {
         it('should delete a user', async() => {
             //creating another Warframe first
-            try {
-	            const spy = jest.spyOn(userController, "delete")
-                const spyGet = jest.spyOn(userController, "get")
+  
+            const spy = jest.spyOn(userController, "delete")
 
-                const spyStatus = jest.spyOn(mockResponse, "status")
-                const spySend = jest.spyOn(mockResponse, "send")
-
-
-	            const mockRequestPOST = {
-	                body: {
-	                    "userName": "deleteMe",
-	                    "userEmail": "deleteMe@plz.com",
-	                    "password": "DELETEME",
-	                    "passwordVerify": "DELETEME"
-	                }
-	            }
-	
-	            await userController.post(mockRequestPOST as Request, mockResponse as Response)
-
-
-                const mockRequest = {
-                    params: {
-                        name: "deleteMe"
-                    }
-                }
-
-                const expectedCode = 204
-                const expectedCodeGET = 404
-
-                try {
-                    await userController.delete(mockRequest as unknown as Request, mockResponse as Response)  
-                    expect(spy).toHaveBeenCalled()
-                    expect(spyStatus).toBeCalledWith(expectedCode)
-                    expect(spySend).toBeCalledWith({
-                        message: "Deleted"
-                    })
-
-                    // try {
-                    //     await userController.get(mockRequest as unknown as Request, mockResponse as Response)
-                    
-                    //     expect(spyGet).toHaveBeenCalled()
-                    //     expect(spyStatus).toBeCalledWith(expectedCodeGET)
-                    //     expect(spySend).toBeCalledWith({
-                    //         message: "No user found"
-                    //     })
-
-                    // } catch (e) {
-                    //     console.log(e)
-                    // }
-                } catch(e) {
-                    console.log(e)
-                }
-            } catch (e) {
-                console.log(e)
-            }
-        })
-    })
-
-    describe('Change an User', () => {
-        it('should change email of a user', async() => {
-            const spy = jest.spyOn(userController, "patch")
             const spyStatus = jest.spyOn(mockResponse, "status")
             const spySend = jest.spyOn(mockResponse, "send")
 
+
+            const mockRequestPOST = {
+                body: {
+                    "userName": "deleteMe",
+                    "userEmail": "deleteMe@plz.com",
+                    "password": "DELETEME",
+                    "passwordVerify": "DELETEME"
+                }
+            }
+            const mockNext: NextFunction = jest.fn().mockImplementation()
+
+            await userController.post(mockRequestPOST as Request, mockResponse as Response, mockNext)
+
+
             const mockRequest = {
                 params: {
-                    name: "xVoban",
-                    toChange: "email",
-                    value : "someotheremail@mail.net"
-                },
-                body: {
-                    original: "someotheremail@mail.net",
-                    confirm: "someotheremail@mail.net"
-                } 
+                    name: "deleteMe"
+                }
             }
-            try {
-                await userController.patch(mockRequest as unknown as Request, mockResponse as Response)
-    
-                const expected = 204
-    
-                expect(spy).toHaveBeenCalled()
-                expect(spyStatus).toBeCalledWith(expected)
-            } catch(e){
-                console.log(e)
-            }
+
+            const expectedCode = 204
+
+            await userController.delete(mockRequest as unknown as Request, mockResponse as Response)  
+            expect(spy).toHaveBeenCalled()
+            expect(spyStatus).toBeCalledWith(expectedCode)
+            expect(spySend).toBeCalledWith({
+                message: "Deleted"
+            })
         })
+    })
+
+
+    describe('Change an User', () => {
+        it('should change user', async () => {
+
+        
+        const spy = jest.spyOn(userController, "patch")
+        const spyStatus = jest.spyOn(mockResponse, "status")
+        const spySend = jest.spyOn(mockResponse, "send")
+
+        const mockRequest = {
+            params: {
+                name: "xVoban",
+                toChange: "email",
+                value : "someotheremail@mail.net"
+            },
+            body: {
+                original: "someotheremail@mail.net",
+                confirm: "someotheremail@mail.net"
+            } 
+        }
+        await userController.patch(mockRequest as unknown as Request, mockResponse as Response)
+
+        const expected = 204
+
+        expect(spy).toHaveBeenCalled()
+        expect(spyStatus).toBeCalledWith(expected)
+           
+        })
+   
 
         it("shouldn't change user's email because it already exists", async() => {
             const spy = jest.spyOn(userController, "patch")
@@ -336,20 +323,17 @@ describe("User Controller", () => {
                     confirm: "limbo@warframemail.com"
                 } 
             }
-            try {
-                await userController.patch(mockRequest as unknown as Request, mockResponse as Response)
-    
-                const expectedCode = 404
-                const expected = {
-                    message: "Could not change email because it already exists"
-                }
+            await userController.patch(mockRequest as unknown as Request, mockResponse as Response)
 
-                expect(spy).toHaveBeenCalled()
-                expect(spyStatus).toBeCalledWith(expectedCode)
-                expect(spySend).toBeCalledWith(expected)
-            } catch(e){
-                console.log(e)
+            const expectedCode = 400
+            const expected = {
+                message: "Could not change email because it already exists"
             }
+
+            expect(spy).toHaveBeenCalled()
+            expect(spyStatus).toBeCalledWith(expectedCode)
+            expect(spySend).toBeCalledWith(expected)
+        
         })
 
         it("shouldn't change user's password because verification is different", async() => {
@@ -368,20 +352,17 @@ describe("User Controller", () => {
                     confirm: "differentPassword"
                 } 
             }
-            try {
-                await userController.patch(mockRequest as unknown as Request, mockResponse as Response)
-    
-                const expectedCode = 400
-                const expected = {
-                    message: "Values are different!"
-                }
+            await userController.patch(mockRequest as unknown as Request, mockResponse as Response)
 
-                expect(spy).toHaveBeenCalled()
-                expect(spyStatus).toBeCalledWith(expectedCode)
-                expect(spySend).toBeCalledWith(expected)
-            } catch(e){
-                console.log(e)
+            const expectedCode = 400
+            const expected = {
+                message: "Values are different!"
             }
+
+            expect(spy).toHaveBeenCalled()
+            expect(spyStatus).toBeCalledWith(expectedCode)
+            expect(spySend).toBeCalledWith(expected)
+        
         })
     })
 
