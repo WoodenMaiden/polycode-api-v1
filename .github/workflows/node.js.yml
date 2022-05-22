@@ -10,7 +10,7 @@ on:
     branches: [ master ]
 
 env:
-  MONGODB_URI: "mongodb://ci:aReallySecuredPassword@localhost:27017/polycode?authSource=admin&serverSelectionTimeoutMS=2000&ssl=false"
+  MONGO_URL: "mongodb://ci:aReallySecuredPassword@localhost:27017/polycode?authSource=admin&serverSelectionTimeoutMS=2000&ssl=false"
 
 jobs:
   build:

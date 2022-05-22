@@ -14,13 +14,13 @@ describe("User Controller", () => {
         try {
             await connection.close()
 
-            if (!process.env.MONGODB_URI) {
+            if (!process.env.MONGO_URL) {
                 console.log("Please fill environment variables!")
                 process.exit(1)
             }
 
             const REGEX = /^(mongodb.+\/)polycode(.+)$/gm // to get rid of db name so we can replace it
-            const MONGO_TEST_URI: string = REGEX.exec(process.env.MONGODB_URI).slice(1,3).join(Date.now().toString())
+            const MONGO_TEST_URI: string = REGEX.exec(process.env.MONGO_URL).slice(1,3).join(Date.now().toString())
             
             try {
                 await connect(MONGO_TEST_URI)

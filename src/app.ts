@@ -46,13 +46,13 @@ app.post('/answer/:name/:id', jsonparse, checkDTO, exerciseController.answer) //
 app.get('/verif/:link', emailVerificationController.get)
 
 app.listen(process.env.PORT || 80, async () => {
-    if (!process.env.MONGODB_URI || !process.env.SENDIN_BLUE_API_KEY|| !process.env.SECRET || !process.env.RUNNER_URL) {
+    if (!process.env.MONGO_URL || !process.env.SENDIN_BLUE_API_KEY|| !process.env.SECRET || !process.env.RUNNER_URL) {
         console.log("Please fill environment variables")
         process.exit(1);
     }
 
     try {
-        await connect(process.env.MONGODB_URI)
+        await connect(process.env.MONGO_URL)
         console.log("Launched")
     }
     catch (e) {
