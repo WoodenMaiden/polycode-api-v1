@@ -79,11 +79,13 @@ class ExerciseController implements Controller{
                 }
             } catch(e) {
                 res.status(500).send({
+                    error: e,
                     message: "Could not add exercice completion to database"
                 })
             }
         } catch(e) {
             res.status(500).send({
+                error: e,
                 message: "Couldn't send your answer to the runners"
             })
         }
