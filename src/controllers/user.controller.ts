@@ -78,6 +78,7 @@ class UserController implements Controller{
                         res.status(204).send()
                         next()
                     } catch (e) {
+                        console.log(e)
                         res.status(409).send({
                             message: "Failed to insert because email and/or username already exists"
                         })
